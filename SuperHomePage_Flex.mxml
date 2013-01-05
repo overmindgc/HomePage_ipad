@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:views="com.overmindgc.homepage.views.*"
+			   width="100%" height="100%" 
+			   preinitialize="application1_preinitializeHandler()" 
+			   creationComplete="init()">
+	<fx:Style source="assets/css/Styles.css"/>
+	<fx:Script>
+		<![CDATA[
+			import com.overmindgc.homepage.events.AppDispatcher;
+			import com.overmindgc.homepage.events.HomeEvent;
+			import com.overmindgc.homepage.utils.AppDataUtil;
+			import com.overmindgc.homepage.utils.Consts;
+			import com.overmindgc.homepage.views.comps.AppWindowFullScreen;
+			
+			/**应用窗口*/
+			public var appWin:AppWindowFullScreen;
+			
+			/**背景颜色*/
+			[Bindable]
+			private var bgColorOne:uint = 0x78b4f0;
+			[Bindable]
+			private var bgColorTwo:uint = 0x6699cc;
+			
+			protected function application1_preinitializeHandler():void
+			{
+				AppDataUtil.loadAppData();
+			}
+			
+			protected function init():void
+			{
+				/**监听打开运行窗口事件*/
+				AppDispatcher.addEventListener(HomeEvent.APPBUTTON_CLICK,openAppWindow_Handler);
+				
+				/**监听背景颜色变化事件*/
+				skinChange.addEventListener(HomeEvent.CHAGE_BGCOLOR_ONE,function(evt:HomeEvent):void
+				{
+					bgColorOne = evt.data as uint;
+				});
+				skinChange.addEventListener(HomeEvent.CHAGE_BGCOLOR_TWO,function(evt:HomeEvent):void
+				{
+					bgColorTwo = evt.data as uint;
+				});
+			}
+			
+			/**
+			 * 打开应用窗口事件
+			 * */
+			protected function openAppWindow_Handler(event:HomeEvent):void
+			{
+				var appData:Object = event.data;
+				var sourceUrl:String = Consts.SWF_ROOT_FOLDER + appData.appFileName;
+				if(!appWin)
+				{
+					appWin = new AppWindowFullScreen();
+					appWin.sourceUrl = sourceUrl;
+					this.addElement(appWin);
+				} else
+				{
+					appWin.sourceUrl = sourceUrl;
+					appWin.includeInLayout = appWin.visible = true;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<!--背景-->
+	<s:Rect id="bg"
+			width="100%" height="100%">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry alpha="0.75" color="{bgColorOne}" ratio="0"/>
+				<s:GradientEntry alpha="0.75" color="{bgColorTwo}" ratio="1"/>
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	<!--顶部bar-->
+	<views:TopBar id="topBar"/>
+	
+	<!--应用容器-->
+	<views:AppContainer id="appContainer" 
+						top="60" left="55" bottom="135" right="55"/>
+	
+	<!--背景色变化组件-->
+	<views:BgColorSetup id="skinChange"
+						x="{this.width - skinChange.width - 10}"
+						y="{topBar.height + 10}"/>
+	<!--底部dock-->
+	<views:DockBar id="dockBar" 
+				   y="{this.height - dockBar.height}"/>
+</s:Application>

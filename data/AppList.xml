@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<!-- 底部dock的应用 -->
+	<dock>
+		<app type="swf" icon="angry-birds.png" 
+			 fileName="BitDouDou.swf">Personal</app>
+		<app type="swf" icon="browser-apple.png" 
+			 fileName="BitDouDou.swf">Browser</app>
+		<app type="swf" icon="calculator-green.png" 
+			 fileName="BitDouDou.swf">Calculator</app>
+		<app type="swf" icon="camera.png" 
+			 fileName="BitDouDou.swf">Camera</app>
+	</dock>
+	
+	<!-- 桌面上的应用 -->
+	<table>
+		<app order="swf" icon="bitdoudou.png" 
+			 fileName="BitDouDou.swf" url="">打豆豆</app>
+		<app order="swf" icon="sudoku.png" 
+			 fileName="Sudoku.swf" url="">数独</app>
+	</table>
+</root>

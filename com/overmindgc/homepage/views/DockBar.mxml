@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="100%" height="100" 
+		 xmlns:comps="com.overmindgc.homepage.views.comps.*"
+		 creationComplete="init()">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import com.overmindgc.homepage.utils.AppDataUtil;
+			import com.overmindgc.homepage.views.comps.DockButton;
+			
+			import mx.events.MoveEvent;
+			
+			/**图标按钮宽度*/
+			private var iconBtnWidth:int = 74;
+			
+			private var appBtnArr:Array = [];
+			
+			protected function init():void
+			{
+				loadAppData();
+			}
+			
+			protected function loadAppData():void
+			{
+				var i:int = 0;
+				for each(var appXml:XML in AppDataUtil.dockAppXml.app)
+				{
+					var appBtn:DockButton = AppDataUtil.coventXmlDataToButton(appXml);
+					moveAppBtn(i,appBtn);
+					this.addElement(appBtn);
+					appBtnArr.push(appBtn);
+					i++;
+				}
+			}
+			
+			/**
+			 * 应用图标跟随背景移动
+			 * */
+			protected function imgDock_moveHandler(event:MoveEvent):void
+			{
+				for(var i:int=0; i<appBtnArr.length; i++)
+				{
+					var appBtn:DockButton = appBtnArr[i];
+					moveAppBtn(i,appBtn);
+				}
+			}
+			
+			/**
+			 * 设置应用图标位置
+			 * */
+			private function moveAppBtn(i:int,appBtn:DockButton):void
+			{
+				appBtn.x = imgDock.x + iconBtnWidth*(i+1) + 50*i;
+				appBtn.y = this.height - 90;
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Image id="imgDock"
+			 x="{(this.width - imgDock.width) / 2}"
+			 y="{this.height - imgDock.height}"
+			 source="@Embed('assets/images/dockbg.png')" 
+			 move="imgDock_moveHandler(event)"/>
+	<!--<comps:DockButton id="imgIcon"
+					  x="{imgDock.x + 100}" 
+					  y="{this.height - 90}"
+					  iconSource="assets/images/dockicon/angry-birds.png"
+					  iconText="Personal"/>
+	<comps:DockButton x="{imgIcon.x + 50 + imgIcon.width}" 
+					  y="{this.height - 90}"
+					  iconSource="assets/images/dockicon/browser-apple.png"
+					  iconText="Browser-apple"/>
+	<comps:DockButton x="{imgIcon.x + 100 + imgIcon.width * 2}" 
+					  y="{this.height - 90}"
+					  iconSource="assets/images/dockicon/calculator-green.png"
+					  iconText="Calculator"/>
+	<comps:DockButton x="{imgIcon.x + 150 + imgIcon.width * 3}" 
+					  y="{this.height - 90}"
+					  iconSource="assets/images/dockicon/camera.png"
+					  iconText="Camera"/>-->
+</s:Group>

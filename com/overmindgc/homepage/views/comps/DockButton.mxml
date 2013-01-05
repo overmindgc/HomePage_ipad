@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" 
+		  width="74" height="90" 
+		  xmlns:common="com.overmindgc.homepage.views.common.*">
+	<fx:Script>
+		<![CDATA[
+			import com.overmindgc.homepage.events.AppDispatcher;
+			import com.overmindgc.homepage.events.HomeEvent;
+			private var _iconSource:String;
+			
+			/**应用swf文件名称*/
+			public var appFileName:String;
+			
+			/**图标文字*/
+			[Bindable]
+			public var iconText:String = "";
+			
+			/**是否是阴影模式（默认是镜面倒影）*/
+			public var shadowMode:Boolean = false;
+			
+			private var loader:Loader = new Loader();
+			private var urlR:URLRequest = new URLRequest();
+
+			/**图标图片源*/
+			public function get iconSource():String
+			{
+				return _iconSource;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set iconSource(value:String):void
+			{
+				_iconSource = value;
+				if(value)
+				{
+					loaderImage(value);
+				}
+			}
+			
+			private function loaderImage(str:String):void{
+				urlR.url = str;
+				loader.load(urlR);
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, imgLoaded);
+			}
+			//加载结束后调用函数
+			private function imgLoaded(e:Event):void
+			{
+				imgDock.source = loader.content;
+				myReflector.target = imgDock;
+				if(shadowMode)
+				{
+					myReflector.alpha = 1;
+					myReflector.falloff = 0.25;
+					myReflector.blurAmount = 1;
+				}
+			}
+
+			protected function imgDock_clickHandler(event:MouseEvent):void
+			{
+				var appObj:Object = new Object();
+				appObj.appFileName = appFileName;
+				appObj.appName = iconText;
+				AppDispatcher.dispatchEvent(new HomeEvent(HomeEvent.APPBUTTON_CLICK,appObj,true));
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!--<s:Move id="moveEffect" duration="400" />-->
+	</fx:Declarations>
+	
+	<s:Image id="imgDock"
+			 x="{(this.width - imgDock.width) / 2}"
+			 buttonMode="true"
+			 toolTip="{iconText}"
+			 click="imgDock_clickHandler(event)"/>
+	<common:Reflector id="myReflector" 
+					  alpha="0.8" 
+					  falloff="0.35" 
+					  blurAmount="0"/>
+	<s:Label id="labName"
+			 x="{(this.width - labName.width) / 2}"
+			 y="{imgDock.height + 4}"
+			 maxWidth="74"
+			 color="0xffffff"
+			 fontWeight="bold"
+			 text="{iconText}"
+			 maxDisplayedLines="1"
+			 />
+</s:Group>
